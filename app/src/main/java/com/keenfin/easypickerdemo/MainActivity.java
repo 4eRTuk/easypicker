@@ -1,5 +1,5 @@
 /*
- *           Copyright © 2015 Stanislav Petriakov
+ *           Copyright © 2015-2016, 2019, 2021 Stanislav Petriakov
  *  Distributed under the Boost Software License, Version 1.0.
  *     (See accompanying file LICENSE_1_0.txt or copy at
  *           http://www.boost.org/LICENSE_1_0.txt)
@@ -22,6 +22,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
+import com.hypertrack.hyperlog.HyperLog;
 import com.keenfin.easypicker.PhotoPicker;
 
 import java.util.ArrayList;
@@ -91,5 +92,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        HyperLog.getDeviceLogsInFile(this);
     }
 }

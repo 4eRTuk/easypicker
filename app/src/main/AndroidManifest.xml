@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~           Copyright © 2015 Stanislav Petriakov
+  ~           Copyright © 2015, 2021 Stanislav Petriakov
   ~  Distributed under the Boost Software License, Version 1.0.
   ~     (See accompanying file LICENSE_1_0.txt or copy at
   ~           http://www.boost.org/LICENSE_1_0.txt)
@@ -11,6 +11,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >

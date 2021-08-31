@@ -1,5 +1,5 @@
 /*
- *           Copyright © 2015-2016, 2019 Stanislav Petriakov
+ *           Copyright © 2015-2016, 2019, 2021 Stanislav Petriakov
  *  Distributed under the Boost Software License, Version 1.0.
  *     (See accompanying file LICENSE_1_0.txt or copy at
  *           http://www.boost.org/LICENSE_1_0.txt)
@@ -12,6 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.io.IOException;
 public class BitmapUtil {
     // thanks to http://stackoverflow.com/questions/477572/strange-out-of-memory-issue-while-loading-an-image-to-a-bitmap-object
     public static Bitmap getBitmap(String path, int requiredSize) {
+        HyperLog.v("PhotoPicker", "get image: " + path);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
@@ -38,21 +41,27 @@ public class BitmapUtil {
         File file = new File(path);
         FileInputStream fs = null;
         try {
+            HyperLog.v("PhotoPicker", "try file input stream");
             fs = new FileInputStream(file);
 
             try {
+                HyperLog.v("PhotoPicker", "get file descriptor");
                 result = BitmapFactory.decodeFileDescriptor(fs.getFD(), null, options);
             } catch (OutOfMemoryError oom) {
+                HyperLog.v("PhotoPicker", "oom: " + oom.getLocalizedMessage());
                 oom.printStackTrace();
 
                 try {
+                    HyperLog.v("PhotoPicker", "in sample size x4");
                     options.inSampleSize *= 4;
                     result = BitmapFactory.decodeFileDescriptor(fs.getFD(), null, options);
                 } catch (OutOfMemoryError oom1) {
+                    HyperLog.v("PhotoPicker", "oom2: " + oom.getLocalizedMessage());
                     oom.printStackTrace();
                 }
             }
         } catch (IOException e) {
+            HyperLog.v("PhotoPicker", "ioex: " + e.getLocalizedMessage());
             e.printStackTrace();
         } finally {
             if (fs != null)
@@ -65,14 +74,20 @@ public class BitmapUtil {
 
         ExifInterface exif;
         int orientation = ExifInterface.ORIENTATION_NORMAL;
+        HyperLog.v("PhotoPicker", "orientation: " + orientation);
         try {
             exif = new ExifInterface(path);
             orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            HyperLog.v("PhotoPicker", "exif: " + orientation);
         } catch (IOException e) {
+            HyperLog.v("PhotoPicker", "ioex2: " + e.getLocalizedMessage());
             e.printStackTrace();
         }
 
-        return rotateBitmap(result, orientation);
+        HyperLog.v("PhotoPicker", "result: " + result);
+        result = rotateBitmap(result, orientation);
+        HyperLog.v("PhotoPicker", "rotated result: " + result);
+        return result;
     }
 
     // http://stackoverflow.com/a/20480741/2088273

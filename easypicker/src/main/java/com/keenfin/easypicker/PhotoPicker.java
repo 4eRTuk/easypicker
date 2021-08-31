@@ -35,6 +35,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -415,12 +417,14 @@ public class PhotoPicker extends RecyclerView {
 
                 if (requestCode == mCameraRequest) {
                     selectedImagePath = mPhotoUri.getPath();
+                    HyperLog.v("PhotoPicker", "camera result: " + selectedImagePath);
                     MediaScannerConnection.scanFile(mContext, new String[]{mPhotoUri.getPath()}, null,
                                                     new MediaScannerConnection.OnScanCompletedListener() {
                                                         public void onScanCompleted(String path, Uri uri) {}
                                                     });
                 } else if (requestCode == mPickRequest) {
                     selectedImagePath = FileUtil.getRealPath(mContext, data.getData());
+                    HyperLog.v("PhotoPicker", "picker result: " + selectedImagePath);
                 } else if (requestCode == mPermissionRequest) {
                     onItemClick(R.id.iv_photo, 0);
                     return;
